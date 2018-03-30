@@ -21,6 +21,6 @@ Anki Addon Code: 1016931132
 # Screens
 ![](.\screens\main.png)
 
-![](.\screens\default_template.png))
+![](.\screens\default_template.png)
 
-![](.\AnKindle\resource\AnKindle.jpg))
+![](.\AnKindle\resource\AnKindle.jpg)
