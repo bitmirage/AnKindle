@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帮助</title>
+    <style type="text/css">
+        body {
+            font-family: 'Microsoft YaHei UI', Consolas, serif;
+        }
+
+        dt {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class=container-fluid>
+    <h1>MDX-Kindle</h1>
+    <p>
+        Features:
+    </p>
+    <ul>
+        <li>One-Click-Import Kindle vocabulary</li>
+        <li>Provide a default template for words（also can be customized）</li>
+        <li>Query MDX dicts for words</li>
+        <li>Switch MDX file for different language keyword</li>
+    </ul>
+    <p class="text-warning"><b>Optional:</b>MDX dictionary is optional,
+        you dan use your won MDX files for query.</p>
+    <P>
+</div>
+<div class=container-fluid>
+
+    <h1>Prerequisites</h1>
+    <ol>
+        <li>Ensure your Kindle has been adapted to machine.</li>
+        <li>In Anki select: Tools > "MDX-Kindle"</li>
+    </ol>
+
+</div>
+<div class=container-fluid>
+    <div class="row-fluid">
+        <h1>使用步骤</h1>
+        <p>请依次点击【导入】窗体内的按钮：</p>
+        <ol>
+            <li><b>（必选）保存为笔记类型</b>
+                <p>
+                    选择Kindle单词导出的目标笔记类型，本插件默认提供一个类型为【AnkiMDXKindle】，
+                    您可以在Anki菜单中的【工具】>【笔记类型管理】中查看其具体内容。
+                </p>
+                <p class="text-info"><b>自定义模板</b>：除了默认的模板【AnkiMDXKindle】，您可以自定义自己的模板进行选择，但是在您的模板中
+                    必须实现以下全部字段：（顺序可不同，允许有其他字段，大小写敏感）</p>
+                <P>
+                <dl>
+                    <dt>stem</dt>
+                    <dd>单词原型</dd>
+
+                    <dt>word</dt>
+                    <dd>单词</dd>
+
+                    <dt>lang</dt>
+                    <dd>源语言类型</dd>
+
+                    <dt>creation_tm</dt>
+                    <dd>加入单词本的时间</dd>
+
+                    <dt>usage</dt>
+                    <dd>Kindle引用的原句</dd>
+
+                    <dt>title</dt>
+                    <dd>书名</dd>
+
+                    <dt>authors</dt>
+                    <dd>作者</dd>
+
+                    <dt>id</dt>
+                    <dd>ID</dd>
+
+                    <dt>mdx_dict</dt>
+                    <dd>用户储存本插件的MDX字典的查询内容</dd>
+                </dl>
+                </P>
+                <p class="text-warning">以上字段必须全部实现，插件才能识别并显示在笔记类型选项中。</p>
+                <P>
+            </li>
+
+            <li><b>（必选）保存到记忆库</b>
+                <p>选择Kindle单词的目标保存记忆库。</p>
+            </li>
+            <li><b>（可选）MDX词典</b>
+                <p>模板提供一个字段为【mdx_dict】您可以选择自己喜欢的MDX字典，插件如果此选项被提供，那么插件会查询这个
+                    词典然后把可用的查询内容放进【mdx_dict】</p>
+            </li>
+            <li><b>导入</b>
+                <p>执行导入</p>
+            </li>
+        </ol>
+    </div>
+</div>
+
+</body>
+</html>

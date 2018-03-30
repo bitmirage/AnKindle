@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>帮助</title>
+    <style type="text/css">
+        body {
+            font-family: 'Microsoft YaHei UI', Consolas, serif;
+        }
+
+        dt {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class=container-fluid>欢迎大家关注微信公众号：“Anki干货铺”或者加入QQ群：723233740</div>
+
+<div class=container-fluid>
+    <h1>An<u>Kindle</u></h1>
+    <p>
+        本插件旨在提供:
+    </p>
+    <ul>
+        <li>一键导入Kindle的生词</li>
+        <li>提供默认生词模板（和自定义模板）</li>
+        <li>添加自定义词典（MDX词典）的功能</li>
+        <li>切换词典目标语言功能</li>
+    </ul>
+    <P>Kindle数据只包含生词以及用法或者例句引用，用户需要自己提供MDX词典作为单词释义的来源。</P>
+</div>
+<div class=container-fluid>
+
+    <h1>准备工作</h1>
+    <ol>
+        <li>确保USB链接Kindle</li>
+        <li>Anki界面菜单选择：工具 > “MDX-Kindle” 打开界面</li>
+        <li>
+            准备MDX词典：MDX词典为可选项，您可以用自己喜欢的MDX词典，或者选择插件默认提供的词典:
+            <ol>
+                <li>点击下方【下载MDX词典】按钮。</li>
+                <li>在打开的网页中选择你的单词语言，比如英语选择“EN”。</li>
+                <li>在语言文件夹中选择你需要下载的词典文件到本地（以"*.MDX“文件结尾的为词典文件，”*.zip”文件需要解压使用）。</li>
+            </ol>
+            <p><b>*** 如果您不使用MDX词典，导入的Kindle单词讲不会有释义信息。 ***</b></p>
+        </li>
+    </ol>
+
+</div>
+<div class=container-fluid>
+    <h1>Kindle生词数据库自动识别</h1>
+    <p>当前版本插件在第一次启动的时候可以自动识别已经USB接入电脑的Kindle设备并自动查找数据库文件。</p>
+    <p>目前仅支持Window系统自动识别， OSX和Linux用户请手动选择（仅选择一次在第一次启动时:</p>
+    <ul>
+       <li>OSX 路径为： Volumes/Kindle/System/Vocabulary/Vocab.db</li>
+    </ul>
+</div>
+
+<div class=container-fluid>
+    <h1>插件可识别笔记类型字段</h1>
+
+    <p class="text-warning">插件只识别<b>包含</b>以下字段的笔记类型作为保存目标。</p>
+    <ul>
+        <li><b>stem</b>: 单词原型</li>
+        <li><b>word</b>: 单词</li>
+        <li><b>lang</b>: 源语言类型</li>
+        <li><b>creation_tm</b>: 加入单词本的时间</li>
+        <li><b>usage</b>: Kindle引用的原句</li>
+        <li><b>title</b>: 书名</li>
+        <li><b>authors</b>: 作者</li>
+        <li><b>id</b>: ID</li>
+        <li><b>mdx_dict</b>: 用户储存本插件的MDX字典的查询内容</li>
+    </ul>
+
+    <h1>配套模板</h1>
+    <p>本插件提供一个默认模板给大家使用，此模板的笔记类型在大家启动Anki时候就自动导入了，可以在 【工具】> 【笔记类型管理】中找到，名字为： “MDXKindle”</p>
+
+    <h1>自定义笔记类型/模板</h1>
+
+    <p class="text-info">除了默认的模板【MDXKindle】，您可以自定义自己的模板进行选择，
+        但是在您的模板字段中
+        必须实现（包含）前文所述所有字段（顺序可不同，允许有其他字段，大小写敏感）。</p>
+    <P>
+</div>
+
+<div class=container-fluid>
+    <div class="row-fluid">
+        <h1>使用步骤</h1>
+        <p>请依次点击【导入】窗体内的按钮：</p>
+        <ol>
+
+            <li><b>（必选）选择Kindle数据库</b>
+                <p>保证Kindle USB接入电脑，插件在Windows上是自动识别Kindle单词数据库，其他系统第一次需要手动选择。</p>
+            </li>
+            <li><b>（必选）导入语言类型</b>
+                <p>对于用Kindle的多语言学习者，单词本里可能包含不止一种语言，这个下拉框用于选择您需要导入的语言生词。</p>
+            </li>
+            <li><b>（必选）保存为笔记类型</b>
+                <p>
+                    选择Kindle单词导出的目标笔记类型，本插件默认提供一个类型为【MDXKindle】，
+                    您可以在Anki菜单中的【工具】>【笔记类型管理】中查看其具体内容。
+                </p>
+
+                <P>
+            </li>
+            <li><b>（必选）保存到记忆库</b>
+                <p>选择Kindle单词的目标保存记忆库。</p>
+            </li>
+            <li><b>（可选）MDX词典</b>
+                <p>模板提供一个字段为【mdx_dict】您可以选择自己喜欢的MDX字典，插件如果此选项被提供，那么插件会查询这个
+                    词典然后把可用的查询内容放进【mdx_dict】</p>
+            </li>
+            <li><b>导入</b>
+                <p>执行导入</p>
+            </li>
+        </ol>
+    </div>
+</div>
+
+</body>
+</html>
