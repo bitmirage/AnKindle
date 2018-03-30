@@ -78,18 +78,9 @@ class _SharedFrame(QFrame):
     def help_txt(self):
         if currentLang == 'zh_CN':
             loc = os.path.join(os.path.dirname(__file__), "resource", "help_cn.html")
-            loc_remote = "https://raw.githubusercontent.com/upday7/MDX-Kindle/master/MDX_Kindle/resource/help_cn.html"
         else:
             loc = os.path.join(os.path.dirname(__file__), "resource", "help_en.html")
-            loc_remote = "https://raw.githubusercontent.com/upday7/MDX-Kindle/master/MDX_Kindle/resource/help_en.html"
-        if not DEBUG:
-            try:
-                thr = Thread(target=urlretrieve, args=(loc_remote, loc))
-                thr.start()
-            except:
-                pass
         return loc
-
 
 def HLine():
     toto = QFrame()
@@ -145,7 +136,7 @@ class Window(QDialog):
 
         self.updater = AddonUpdater(
             self, _trans("AnKindle"), ADDON_CD,
-            "https://raw.githubusercontent.com/upday7/MDX-Kindle/master/MDX_Kindle/const.py",
+            "https://raw.githubusercontent.com/upday7/AnKindle/master/AnKindle/const.py",
             "",
             mw.pm.addonFolder(),
             __version__

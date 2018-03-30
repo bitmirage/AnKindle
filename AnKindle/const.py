@@ -7,7 +7,7 @@ __version__ = "0.3.12"
 HAS_SET_UP = False
 ADDON_CD = 1016931132
 DEBUG = False
-MDX_LIB_URL = "https://github.com/upday7/MDX-Kindle/tree/master/MDX_Kindle/resource/MDX%20Dictionary"
+MDX_LIB_URL = "https://github.com/upday7/AnKindle/tree/master/AnKindle/resource/MDX%20Dictionary"
 DEFAULT_TEMPLATE = os.path.join(os.path.dirname(__file__), u"resource", ur"AnKindle.apkg")
 SQL_SELECT_WORDS = """
 SELECT
