@@ -19,8 +19,7 @@ Yet another Kindle vocab importer for Anki with MDX dicts support
 Anki Addon Code: 1016931132
 
 # Screens
-![](.\screens\main.png)
+![](https://raw.githubusercontent.com/upday7/AnKindle/master/screens/main.png)
 
-![](.\screens\default_template.png)
+![](https://raw.githubusercontent.com/upday7/AnKindle/master/screens/default_template.png)
 
-![](.\AnKindle\resource\AnKindle.jpg)
