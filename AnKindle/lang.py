@@ -56,7 +56,7 @@ trans = {
                               'en': u'None of MDX dictionaries are selected, '
                                     u'explanations will be lost in your imports. Confirm to continue?'},
     'OPTIONAL': {'zh_CN': u'<b>可选：</b>', 'en': u'<b>Optional:</b>'},
-    'USE LATEST TEMPLATE': {'zh_CN': u'使用最新MDX-Kindle模板', 'en': u'Use latest MDX-Kindle Template'},
+    'USE LATEST TEMPLATE': {'zh_CN': u'使用最新AnKindle模板', 'en': u'Use latest AnKindle Template'},
     'LANGUAGE': {'zh_CN': u'生词语言类型:', 'en': u'Word Language: '},
     'DOWNLOAD MDX': {'zh_CN': u'下载MDX词典', 'en': u'Download MDX Dictionaries'},
     'MDX MEMORY ERROR': {'zh_CN': u'无法读取MDX词典内容，请更换词典文件。', 'en': u'Memory error when loading MDX, please switch '

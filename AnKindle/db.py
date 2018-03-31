@@ -83,7 +83,7 @@ class KindleDB(DB):
             FROM words AS ws LEFT JOIN lookups AS lus ON ws.id = lus.word_key
               LEFT JOIN book_info AS bi ON lus.book_key = bi.id
             
-            WHERE ws.CATEGORY = ?
+            {}
             
-            """, (0 if only_new else 100)
+            """.format("WHERE ws.CATEGORY = 100" if only_new else "")
         )
