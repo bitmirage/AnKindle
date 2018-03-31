@@ -85,5 +85,5 @@ class KindleDB(DB):
             
             {}
             
-            """.format("WHERE ws.CATEGORY = 100" if only_new else "")
+            """.format("WHERE ws.CATEGORY = 0"  if only_new else "")
         )
