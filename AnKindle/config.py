@@ -85,9 +85,9 @@ class _MetaConfigObj(type):
                     json.dump(config_obj, f)
             elif store_location == _MetaConfigObj.StoreLocation.Profile:
                 if _MetaConfigObj.IsAnki21():
-                    mw.pm.profile.update(config_obj)
+                    mw.pm.profile.update({mw.pm.name: config_obj})
                 else:
-                    mw.pm.meta.update(config_obj)
+                    mw.pm.profile.update({mw.pm.name: config_obj})
         except:
             super(_MetaConfigObj, cls).__setattr__(key, value)
 
@@ -106,10 +106,7 @@ class _MetaConfigObj(type):
                 return json.load(ff)
 
         if store_location == _MetaConfigObj.StoreLocation.Profile:
-            if _MetaConfigObj.IsAnki21():
-                disk_config_obj = mw.pm.profile
-            else:
-                disk_config_obj = mw.pm.meta
+            disk_config_obj = mw.pm.profile.get(mw.pm.name,{})
             cls.config_dict.update(disk_config_obj)
         elif store_location == _MetaConfigObj.StoreLocation.AddonFolder:
             # ensure json file
