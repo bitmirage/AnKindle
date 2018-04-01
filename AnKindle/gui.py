@@ -618,13 +618,13 @@ class WordsView(QDialog):
     @property
     def word_data(self,):
         if self.lang:
-            new = self.parent().db.get_words(True)
+            new = list(self.parent().db.get_words(True))
 
             all = self.parent().db.get_words(False)
 
             old = [i for i in all if i not in new]
             return list(filter(lambda l:l[3].strip().upper()==self.lang.strip().upper(),
-                               sorted(list(new)+list(old),key=itemgetter(4),reverse=True)))
+                               sorted(new+old,key=itemgetter(4),reverse=True)))
         else:
             return []
 
