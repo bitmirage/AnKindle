@@ -535,7 +535,7 @@ class Window(QDialog):
                 _note.fields[_note._fieldOrd('usage')] = self.adapt_to_anki(usage.replace(word, u"<b>%s</b>" % word))
                 _note.fields[_note._fieldOrd('title')] = title
                 _note.fields[_note._fieldOrd('authors')] = authors
-                _note.fields[_note._fieldOrd('mdx_dict')] = self.adapt_to_anki(self.get_html(word))
+                _note.fields[_note._fieldOrd('mdx_dict')] = self.adapt_to_anki(self.get_html(stem))
 
                 try:
                     _note.fields[_note._fieldOrd('mdx_name')] = dict_nm
