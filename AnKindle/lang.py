@@ -46,7 +46,7 @@ trans = {
     'HELP': {'zh_CN': u'帮助', 'en': u'Help'},
     'IMPORT': {'zh_CN': u'导入设置', 'en': u'Import Config'},
     'SELECT KINDLE DB': {'zh_CN': u'重新选择Kindle数据库文件', 'en': u'Re-select Kindle Database File'},
-    'IMPORT NEW': {'zh_CN': u'只导入新词', 'en': u'Import New'},
+    'ONLY NEW WORDS': {'zh_CN': u'仅新词', 'en': u'Only New'},
     'ONE CLICK IMPORT': {'zh_CN': u'一键导入', 'en': u'One-Click-Import'},
     'GET KINDLE DB': {'zh_CN': u'请手动选择Kindle数据库，。', 'en': u'Please select Kindle vocab database.'},
     'IMPORTING': {'zh_CN': u'正在导入生词', 'en': u'Importing'},
@@ -59,12 +59,30 @@ trans = {
     'USE LATEST TEMPLATE': {'zh_CN': u'使用最新AnKindle模板', 'en': u'Use latest AnKindle Template'},
     'LANGUAGE': {'zh_CN': u'生词语言类型:', 'en': u'Word Language: '},
     'DOWNLOAD MDX': {'zh_CN': u'下载MDX词典', 'en': u'Download MDX Dictionaries'},
-    'MDX MEMORY ERROR': {'zh_CN': u'无法读取MDX词典内容，请更换词典文件。', 'en': u'Memory error when loading MDX, please switch '
-                                                                 u'another MDX file.'},
+    'MATURE': {'zh_CN': u'已掌握', 'en': u'Mature'},
+    'NEW WORDS': {'zh_CN': u'新词', 'en': u'New'},
+    'MDX MEMORY ERROR': {'zh_CN': u'无法读取MDX词典内容，请更换词典文件。', 'en': u'Memory error when loading MDX, please switch ' u'another MDX file.'},
+    'REFRESH': {'zh_CN': u'刷新', 'en': u'Refresh'},
+    'MARK MATURE': {'zh_CN': u'标记为已掌握', 'en': u'Mark Mature'},
+    'MARK NEW': {'zh_CN': u'标记为新词', 'en': u'Mark New'},
+
     'MDX TYPE ERROR': {'zh_CN': u'无法读取MDX词典内容，请更换词典文件。', 'en': u'Type error when loading MDX, please switch '
                                                                u'another MDX file.'},
     "ENSURE USB": {'zh_CN': u'请确保Kindle已经接入电脑。',
                    'en': u'Please ensure Kindle has been adtapted to your machine.'},
+    "ANKINDLE WORDS PREVIEW": {'zh_CN': u'生词预览',
+                   'en': u'Words Preview'},
+
+
+    # region preview window
+    'WORD': {'zh_CN': u'单词', 'en': u'Word'},
+    'STEM': {'zh_CN': u'原型', 'en': u'Stem'},
+    'ADDED_TM': {'zh_CN': u'添加日期', 'en': u'Created'},
+    'USAGE': {'zh_CN': u'原句', 'en': u'Usage'},
+    'TITLE': {'zh_CN': u'书籍', 'en': u'Title'},
+    'AUTHORS': {'zh_CN': u'作者', 'en': u'Author(s)'},
+
+    # endregion
 }
 
 

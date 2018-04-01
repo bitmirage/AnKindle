@@ -79,7 +79,8 @@ class KindleDB(DB):
               datetime(ws.timestamp * 0.001, 'unixepoch', 'localtime') added_tm,
               lus.usage,
               bi.title,
-              bi.authors
+              bi.authors,
+              ws.CATEGORY
             FROM words AS ws LEFT JOIN lookups AS lus ON ws.id = lus.word_key
               LEFT JOIN book_info AS bi ON lus.book_key = bi.id
             
@@ -87,3 +88,11 @@ class KindleDB(DB):
             
             """.format("WHERE ws.CATEGORY = 0"  if only_new else "")
         )
+    def update_word_mature(self,word_id,category):
+        self.execute(
+            """
+            update words set category = ? where id = ?
+
+            """, category,word_id
+        )
+        self.commit()

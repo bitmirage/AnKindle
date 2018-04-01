@@ -5,16 +5,20 @@ import os
 import re
 import sqlite3
 from functools import partial
+from operator import itemgetter
 from threading import Thread
 from urllib import urlretrieve
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import QAbstractTableModel, Qt, QModelIndex
 from PyQt4.QtGui import QDialog, QVBoxLayout, QFrame, \
-    QPushButton, QSpacerItem, QLabel, QHBoxLayout, QSizePolicy, QGroupBox, QComboBox, QCheckBox
+    QPushButton, QSpacerItem, QLabel, QHBoxLayout, QSizePolicy, QGroupBox, QComboBox, QCheckBox, QTabWidget, QTableView, \
+    QItemDelegate, QBrush, QColor, QPainter, QFont, QIcon
 
 import anki
 from AnKindle import resource_rc
 from anki import notes, lang
+from aqt.webview import AnkiWebView
 from anki.lang import currentLang
 from aqt import mw
 from aqt.importing import importFile
@@ -172,18 +176,26 @@ class Window(QDialog):
         self.l_lists.addWidget(QLabel(_trans("Optional"), self), 0, QtCore.Qt.AlignLeft)
         self.l_lists.addLayout(l)
 
-        self.btn_import = QPushButton(_trans("ONE CLICK IMPORT"), self)
+        self.btn_import = QPushButton(_trans("ONE CLICK IMPORT"), self,clicked=self.on_import)
         self.btn_import.setEnabled(False)
-        self.btn_import.clicked.connect(self.on_import)
 
-        self.ck_import_new = QCheckBox(_trans("IMPORT NEW"), self, clicked=self.on_ck_import_new)
+        self.btn_preview_words = QPushButton(self, clicked=self.on_preview_words)
+        self.btn_preview_words.setToolTip(_trans("ANKINDLE WORDS PREVIEW"))
+        self.btn_preview_words.setEnabled(False)
+        self.btn_preview_words.setIcon(
+            QIcon(os.path.join(os.path.dirname(__file__), "resource", "word_list.png"))
+        )
+
+        self.ck_import_new = QCheckBox(_trans("ONLY NEW WORDS"), self, clicked=self.on_ck_import_new)
 
         self.l = QVBoxLayout(self)
         self.l.addWidget(frm_widgets)
         self.l.addWidget(self.grp)
         l_import = QHBoxLayout()
-        self.ck_import_new.setFixedWidth(90)
+        self.ck_import_new.setFixedWidth(70)
+        self.btn_preview_words.setFixedWidth(30)
         l_import.addWidget(self.ck_import_new)
+        l_import.addWidget(self.btn_preview_words)
         l_import.addWidget(self.btn_import)
         self.l.addLayout(l_import)
         self.l.addSpacerItem(QSpacerItem(20, 10, QSizePolicy.Expanding, QSizePolicy.Minimum))
@@ -199,6 +211,7 @@ class Window(QDialog):
         self._preload_data = None
         self._lang_config_dict = {}
         self.db = None
+        self.preview_words_win = WordsView(self)
         self.on_select_kindle_db(False)
 
         self.missed_css = set()
@@ -222,7 +235,9 @@ class Window(QDialog):
             self.on_select_deck_clicked(deck_id, on_combo_changed)
 
     def _validate_clicks(self):
-        self.btn_import.setEnabled(all([self.model, self.deck, self.current_mdx_lang]))
+        _ = all([self.model, self.deck, self.current_mdx_lang])
+        self.btn_import.setEnabled(_)
+        self.btn_preview_words.setEnabled(_)
 
     def _validate_langs(self):
         if self.word_langs:
@@ -479,18 +494,30 @@ class Window(QDialog):
     def word_langs(self):
         langs = set()
         for i, _ in enumerate(self.word_data):
-            (id, word, stem, lang, added_tm, usage, title, authors) = _
+            (id, word, stem, lang, added_tm, usage, title, authors,category) = _
             if lang:
                 langs.add(lang.upper())
         return list(langs)
 
-    def on_import(self):
+    def yield_one_word(self,filter_lang=''):
         self._preload_data = None
         # validate db still online
         if not self.on_select_kindle_db(False):
             showInfo(_trans("ENSURE USB"), mw, type="warning", title=_trans("ANKINDLE"))
             return
+        progress = ProgressManager(self)
+        progress.start(immediate=True)
+        words = self.word_data
+        for i, _ in enumerate(words):
+            progress.update(_trans("IMPORTING") + "\n{} / {}".format(i + 1, len(words)), i, True)
+            (id, word, stem, lang, added_tm, usage, title, authors,category) = _
+            if lang and lang.upper() != filter_lang if filter_lang else self.current_mdx_lang:
+                continue
+            yield id, word, stem, lang, added_tm, usage, title, authors,category
 
+        progress.finish()
+
+    def on_import(self):
         dict_nm = ''
         if self.builder:
             try:
@@ -510,16 +537,11 @@ class Window(QDialog):
             if not ret:
                 return
 
-        progress = ProgressManager(self)
         total_new = 0
         total_dup = 0
-        progress.start(immediate=True)
-        words = self.word_data
-        for i, _ in enumerate(words):
-            progress.update(_trans("IMPORTING") + "\n{} / {}".format(i + 1, len(words)), i, True)
-            (id, word, stem, lang, added_tm, usage, title, authors) = _
-            if lang and lang.upper() != self.current_mdx_lang:
-                continue
+        for i, _ in enumerate(self.yield_one_word()):
+            (id, word, stem, lang, added_tm, usage, title, authors,category) = _
+            # region save new cards
             try:
                 note = notes.Note(mw.col, mw.col.models.models[unicode(self.model['id'])])
             except KeyError:
@@ -553,7 +575,235 @@ class Window(QDialog):
             else:
                 total_dup += 1
             mw.col.autosave()
-        progress.finish()
-
+            # endregion
         mw.moveToState("deckBrowser")
         showInfo(_trans("CREATED AND DUPLICATES") % (total_new, total_dup))
+
+    def on_preview_words(self):
+        self.preview_words_win.lang =self.current_mdx_lang
+        self.preview_words_win.refresh()
+        self.preview_words_win.exec_()
+
+
+
+class WordsView(QDialog):
+
+    def __init__(self,parent):
+        super(WordsView, self).__init__(parent)
+        self.setWindowTitle(_trans("ANKINDLE WORDS PREVIEW"))
+        self.setWindowIcon(QIcon(QIcon(os.path.join(os.path.dirname(__file__), "resource", "word_list.png"))))
+
+
+        self.tabs = QTabWidget(self,currentChanged= self.on_current_tab_changed)
+        self.learned_view = None
+        self.new_view = None
+        self.btn_refresh = QPushButton(_trans("REFRESH"),clicked = self.refresh)
+        self.btn_refresh.setMinimumWidth(100)
+        self.btn_mark_as_mature = QPushButton(_trans("MARK MATURE"),clicked = self.mark_mature)
+        self.btn_mark_as_mature .setMinimumWidth(100)
+
+
+        l = QVBoxLayout(self)
+        l.addWidget(self.tabs)
+
+        l_h = QHBoxLayout()
+        l_h.addWidget(self.btn_refresh)
+        l_h.addWidget(self.btn_mark_as_mature)
+        l_h.addSpacerItem(QSpacerItem(100,1,QSizePolicy.Expanding,QSizePolicy.Minimum))
+        l.addLayout(l_h)
+
+        self.lang = ''
+
+
+    @property
+    def word_data(self,):
+        if self.lang:
+            new = self.parent().db.get_words(True)
+
+            all = self.parent().db.get_words(False)
+
+            old = [i for i in all if i not in new]
+            return list(filter(lambda l:l[3].strip().upper()==self.lang.strip().upper(),
+                               sorted(list(new)+list(old),key=itemgetter(4),reverse=True)))
+        else:
+            return []
+
+    def mark_mature(self):
+        progress = ProgressManager(self)
+        progress.start(immediate=True)
+        progress.update(_trans("Marking Words as Manure"))
+
+        category = 100 if self.tabs.currentIndex() else 0
+        if category:
+            tableView = self.learned_view
+        else:
+            tableView = self.new_view
+
+        for idx in tableView.selectionModel().selectedRows():
+            kindle_word_id = tableView.model().word_data[idx.row()][0]
+            self.parent().db.update_word_mature(kindle_word_id,100 if not category else 0)
+
+        progress.finish()
+        self.refresh()
+
+    def on_current_tab_changed(self,index):
+        self.btn_mark_as_mature.setText(_trans("MARK MATURE") if not index else _trans("MARK NEW"))
+
+    def refresh(self):
+        _data_new = []
+        _data_learned = []
+
+        try:
+            self.tabs.removeTab(0)
+            self.tabs.removeTab(0)
+        except:
+            pass
+
+        self.learned_view = None
+        self.new_view = None
+
+        self.new_model = WordsModel()
+        self.learned_model = WordsModel()
+
+        for _ in self.word_data:
+            id, word, stem, lang, added_tm, usage, title, authors,category = _
+            if category==100 :
+                _data_learned.append(_)
+            else:
+                _data_new.append(_)
+
+
+        if (not self.new_view):
+            self.new_view = QTableView(self.tabs)
+            self.new_model.set_data(_data_new)
+            self.new_view.setModel(self.new_model)
+            # self.new_view.setItemDelegate(StatusDelegate(self, self.new_model))
+            self.tabs.addTab(self.new_view, _trans("NEW WORDS"))
+
+        if not self.learned_view:
+            self.learned_view = QTableView(self.tabs)
+            self.learned_model.set_data(_data_learned)
+            self.learned_view.setModel(self.learned_model)
+            # self.learned_view.setItemDelegate(StatusDelegate(self, self.learned_model))
+            self.tabs.addTab(self.learned_view, _trans("MATURE"))
+
+        self.set_table_look()
+    def set_table_look(self):
+        for tableView in (self.new_view,self.learned_view):
+            if not tableView:
+                continue
+
+
+            tableView.setMinimumSize(QtCore.QSize(800, 400))
+            tableView.setContextMenuPolicy(QtCore.Qt.ActionsContextMenu)
+            tableView.setFrameShape(QtGui.QFrame.NoFrame)
+            tableView.setFrameShadow(QtGui.QFrame.Plain)
+            tableView.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+            tableView.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+            tableView.setTabKeyNavigation(False)
+            tableView.setAlternatingRowColors(True)
+            tableView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+            tableView.horizontalHeader().setCascadingSectionResizes(False)
+            tableView.horizontalHeader().setHighlightSections(False)
+            tableView.horizontalHeader().setMinimumSectionSize(20)
+            tableView.horizontalHeader().setSortIndicatorShown(True)
+
+
+            tableView.horizontalHeader().hideSection(0)
+            tableView.horizontalHeader().hideSection(3)
+            tableView.horizontalHeader().hideSection(8)
+
+            tableView.resizeColumnToContents(1)
+            tableView.resizeColumnToContents(2)
+            tableView.resizeColumnToContents(3)
+            tableView.resizeColumnToContents(7)
+
+
+# class StatusDelegate(QItemDelegate):
+#
+#     def __init__(self, browser, model):
+#         QItemDelegate.__init__(self, browser)
+#         self.model = model
+#         self.browser = browser
+#
+#     def paint(self, painter, option, index):
+#         if self.model.word_data[index.row()][0] in self.browser._to_be_matured:
+#             brush = QBrush(QColor("#FFFFB2"))
+#             painter.save()
+#             fnt = QFont()
+#             fnt.setBold(True)
+#             painter.setFont(fnt)
+#             painter.fillRect(option.rect, brush)
+#             painter.restore()
+#         return QItemDelegate.paint(self, painter, option, index)
+
+# noinspection PyMethodOverriding
+class WordsModel(QAbstractTableModel):
+
+    def __init__(self):
+        QAbstractTableModel.__init__(self)
+        self.sortKey = None
+        self.activeCols = ['id',_trans('word'), _trans('stem'), 'lang', _trans('added_tm'),
+        _trans('usage'), _trans('title'), _trans('authors'),'category']
+        self.word_data = None
+
+    def set_data(self,data):
+        self.word_data = data
+
+    def rowCount(self, index):
+        """
+
+        :type index: QModelIndex
+        :return:
+        """
+        return len(self.word_data)
+
+    def columnCount(self, index):
+        """
+
+        :type index: QModelIndex
+        :return:
+        """
+        return len(self.activeCols)
+
+    def data(self, index, role):
+        """
+
+        :type index: QModelIndex
+        :return:
+        """
+
+        if not index.isValid():
+            return
+        elif role == Qt.TextAlignmentRole:
+            align = Qt.AlignVCenter
+            return align
+        elif role == Qt.DisplayRole or role == Qt.EditRole or role==Qt.ToolTipRole:
+            return self.columnData(index)
+        else:
+            return
+
+    def headerData(self, section, orientation, role):
+        if orientation == Qt.Vertical:
+            return
+        elif role == Qt.DisplayRole and section < len(self.activeCols):
+            txt = self.columnType(section)
+            return txt
+        else:
+            return
+
+    def flags(self, index):
+        return Qt.ItemFlag(Qt.ItemIsEnabled |
+                           Qt.ItemIsSelectable)
+    def columnType(self, column):
+        return self.activeCols[column]
+
+    def columnData(self,index):
+        """
+
+        :type index: QModelIndex
+        :return:
+        """
+        row = index.row()
+        col = index.column()
+        return self.word_data[row][col]
