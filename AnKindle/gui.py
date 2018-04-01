@@ -527,15 +527,19 @@ class Window(QDialog):
             note.model()['did'] = self.deck['id']
 
             def update_note(_note):
+
+                qry_word = stem if stem else word if word else ''
+                _usage = self.adapt_to_anki(usage.replace(word, u"<b>%s</b>" % word)) if usage else None
+
                 _note.fields[_note._fieldOrd('id')] = id
                 _note.fields[_note._fieldOrd('word')] = word
                 _note.fields[_note._fieldOrd('stem')] = stem
                 _note.fields[_note._fieldOrd('lang')] = lang
                 _note.fields[_note._fieldOrd('creation_tm')] = added_tm
-                _note.fields[_note._fieldOrd('usage')] = self.adapt_to_anki(usage.replace(word, u"<b>%s</b>" % word))
+                _note.fields[_note._fieldOrd('usage')] = _usage
                 _note.fields[_note._fieldOrd('title')] = title
                 _note.fields[_note._fieldOrd('authors')] = authors
-                _note.fields[_note._fieldOrd('mdx_dict')] = self.adapt_to_anki(self.get_html(stem))
+                _note.fields[_note._fieldOrd('mdx_dict')] = self.adapt_to_anki(self.get_html(qry_word))
 
                 try:
                     _note.fields[_note._fieldOrd('mdx_name')] = dict_nm
