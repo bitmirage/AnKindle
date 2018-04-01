@@ -511,7 +511,7 @@ class Window(QDialog):
         for i, _ in enumerate(words):
             progress.update(_trans("IMPORTING") + "\n{} / {}".format(i + 1, len(words)), i, True)
             (id, word, stem, lang, added_tm, usage, title, authors,category) = _
-            if lang and lang.upper() != filter_lang if filter_lang else self.current_mdx_lang:
+            if lang and (lang.upper() != (filter_lang if filter_lang else self.current_mdx_lang)):
                 continue
             yield id, word, stem, lang, added_tm, usage, title, authors,category
 
