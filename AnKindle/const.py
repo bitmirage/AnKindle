@@ -3,7 +3,7 @@
 # Project : AnKindle
 import os
 
-__version__ = "0.3.14"
+__version__ = "0.3.15"
 HAS_SET_UP = False
 ADDON_CD = 1016931132
 DEBUG = False
