@@ -38,7 +38,6 @@ class AnKindleAddon:
 
     def on_profile_loaded(self):
         self.init_menu()
-        self.on_show_dialog()
 
     def init_menu(self):
         # init actions

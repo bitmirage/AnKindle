@@ -334,7 +334,7 @@ class Window(QDialog):
     def on_select_deck_clicked(self, did, ignore_selection=False):
         nm = None
         if did:
-            nm = mw.col.decks.decks[did]["name"]
+            nm = mw.col.decks.decks.get(did,{"name":''})["name"]
         else:
             ret = None
             if not ignore_selection:
