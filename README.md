@@ -21,5 +21,7 @@ Anki Addon Code: 1016931132
 # Screens
 ![](https://raw.githubusercontent.com/upday7/AnKindle/master/screens/main.png)
 
+![](https://raw.githubusercontent.com/upday7/AnKindle/master/screens/word_preview.png)
+
 ![](https://raw.githubusercontent.com/upday7/AnKindle/master/screens/default_template.png)
 
