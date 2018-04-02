@@ -19,7 +19,7 @@ except ImportError:
 try:
     from uuid import uuid4
 except ImportError:
-    from ..lib.uuid import uuid4
+    from .libs.uuid import uuid4
 
 _style = u"""
 <style>
